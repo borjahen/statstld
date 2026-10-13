@@ -1,0 +1,50 @@
+:root {
+  --app-bg: #161719;
+  --topbar-bg: #0d0e10;
+  --clock-bg: #17181b;
+  --surface: #1d1f23;
+  --surface-raised: #25272c;
+  --divider: #0b0c0d;
+  --text: #ecebe8;
+  --text-strong: #ffffff;
+  --text-body: #d5d6d9;
+  --text-secondary: #c4c6ca;
+  --text-muted: #a4a7ad;
+  --text-label: #8c8f96;
+  --text-faint: #6e7178;
+  --accent: #e9b949;
+  --on-accent: #141414;
+  --danger: #ff6b6b;
+  --danger-text: #ff8a80;
+  --made: #0a7e3a;
+  --miss: #b02a2d;
+  --club: #0a2b85;
+  --font-ui: 'Barlow', system-ui, sans-serif;
+  --font-num: 'Barlow Condensed', 'Barlow', sans-serif;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--app-bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

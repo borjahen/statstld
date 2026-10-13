@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#161719;color:#ECEBE8;font-family:'Barlow',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font-family:inherit;color:inherit}
+a{color:#E9B949}a:hover{color:#F5D27A}
+</style>
+</helmet>
+<div style="height:100vh; min-height:680px; min-width:1180px; display:grid; grid-template-columns:minmax(0,1fr) 400px; grid-template-rows:minmax(0,1fr); overflow:hidden; background:#161719;">
+
+  <div style="display:flex; flex-direction:column; min-width:0; min-height:0;">
+  <header data-screen-label="Marcador" style="flex:none; background:#0d0e10; border-bottom:1px solid #000; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto; align-items:center; height:96px; padding:0 12px; gap:8px;">
+
+    <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+      <div style="width:38px; height:38px; flex:none; background:#fff; border-radius:6px; padding:3px; display:flex; align-items:center; justify-content:center;"><img src="assets/cbtelde.png" alt="CB Telde" style="width:100%; height:100%; object-fit:contain; display:block;"></div>
+      <div style="display:flex; flex-direction:column; gap:4px; min-width:0; flex:1 1 auto;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;">CB Telde</div>
+        <div style="display:grid; grid-template-columns:auto; justify-content:start; align-items:center; row-gap:1px; overflow:hidden; max-width:100%;">
+          
+          <div style="display:flex; gap:2px;">
+            <sc-for list="{{ homeFouls }}" as="f" hint-placeholder-count="5">
+              <span style="flex:none; display:block; width:9px; height:9px; border-radius:2px; background:{{ f.bg }}; border:1.5px solid {{ f.bd }};"></span>
+            </sc-for>
+          </div>
+          
+          <div style="display:flex; gap:2px;">
+            <sc-for list="{{ homeTO }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.onClick }}" title="Tiempo muerto" style="flex:none; width:9px; height:20px; padding:0; border:0; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                <span style="flex:none; display:block; width:9px; height:9px; border-radius:50%; background:{{ t.bg }}; border:1.5px solid {{ t.bd }};"></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="margin-left:auto; flex:none; font:700 clamp(36px, 3.4vw, 64px)/1 'Barlow Condensed'; font-variant-numeric:tabular-nums; letter-spacing:0.01em;">{{ homeScore }}</div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:6px; background:#17181b; border:1px solid rgba(255,255,255,0.06); border-radius:12px; height:80px; padding:0 8px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <span style="font-size:8px; font-weight:600; letter-spacing:0.14em; color:#8C8F96;">{{ periodLabel }}</span>
+        <div style="display:flex; align-items:center; gap:2px;">
+          <button onClick="{{ prevPeriod }}" style="width:26px; height:32px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); cursor:pointer; font-size:16px; line-height:1;" style-active="background:rgba(255,255,255,0.14);">‹</button>
+          <span style="min-width:28px; text-align:center; font:700 22px/1 'Barlow Condensed';">{{ periodVal }}</span>
+          <button onClick="{{ nextPeriod }}" style="width:26px; height:32px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); cursor:pointer; font-size:16px; line-height:1;" style-active="background:rgba(255,255,255,0.14);">›</button>
+        </div>
+      </div>
+
+      <div style="width:1px; align-self:stretch; margin:12px 2px; background:rgba(255,255,255,0.07);"></div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px; min-width:90px;">
+        <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}">
+          <div style="font:600 40px/0.95 'Barlow Condensed'; font-variant-numeric:tabular-nums; letter-spacing:0.02em; color:{{ clockColor }}; text-align:center;">{{ clockStr }}</div>
+          <button onClick="{{ startEdit }}" style="height:22px; padding:0 9px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); cursor:pointer; font-size:10px; font-weight:600; color:#B9BBC0; display:flex; align-items:center; gap:5px; white-space:nowrap; flex:none;" style-active="background:rgba(255,255,255,0.14);"><span>✎</span><span>Editar</span></button>
+        </sc-if>
+        <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+          <input ref="{{ editRef }}" value="{{ editVal }}" onChange="{{ onEditChange }}" onKeyDown="{{ onEditKey }}" inputMode="decimal" placeholder="m:ss" style="width:96px; height:40px; padding:0; text-align:center; font:600 34px/1 'Barlow Condensed'; font-variant-numeric:tabular-nums; color:#E9B949; background:#0d0e10; border:1.5px solid {{ editBorder }}; border-radius:8px; outline:none;">
+          <div style="display:flex; gap:4px;">
+            <button onClick="{{ cancelEdit }}" style="height:22px; padding:0 6px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); cursor:pointer; font-size:10px; font-weight:600; color:#B9BBC0;">Cancelar</button>
+            <button onClick="{{ saveEdit }}" style="height:22px; padding:0 8px; border-radius:6px; border:0; background:#E9B949; cursor:pointer; font-size:10px; font-weight:700; color:#141414;">OK</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <button onClick="{{ toggleClock }}" title="Iniciar / parar crono (espacio)" style="width:46px; height:46px; border-radius:10px; border:0; background:{{ playBg }}; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+        <sc-if value="{{ running }}" hint-placeholder-val="{{ false }}">
+          <svg width="16" height="18" viewBox="0 0 20 22"><rect x="2" y="1" width="5.5" height="20" rx="1.5" fill="#ECEBE8"></rect><rect x="12.5" y="1" width="5.5" height="20" rx="1.5" fill="#ECEBE8"></rect></svg>
+        </sc-if>
+        <sc-if value="{{ paused }}" hint-placeholder-val="{{ true }}">
+          <svg width="16" height="18" viewBox="0 0 20 22"><polygon points="3,1 19,11 3,21" fill="#141414"></polygon></svg>
+        </sc-if>
+      </button>
+
+      <div style="width:1px; align-self:stretch; margin:12px 2px; background:rgba(255,255,255,0.07);"></div>
+
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <button onClick="{{ togglePoss }}" title="Flecha de posesión alterna" style="width:80px; height:30px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" style-active="background:rgba(255,255,255,0.14);">
+          <svg width="11" height="11" viewBox="0 0 18 18"><polygon points="16,2 16,16 3,9" fill="{{ possL }}"></polygon></svg>
+          <span style="font-size:9px; font-weight:600; letter-spacing:0.08em; color:#8C8F96;">POS.</span>
+          <svg width="11" height="11" viewBox="0 0 18 18"><polygon points="2,2 2,16 15,9" fill="{{ possR }}"></polygon></svg>
+        </button>
+        <button onClick="{{ toggleAttack }}" title="Canasta que atacamos" style="width:80px; height:30px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" style-active="background:rgba(255,255,255,0.14);">
+          <svg width="11" height="11" viewBox="0 0 18 18"><polygon points="16,2 16,16 3,9" fill="{{ atkL }}"></polygon></svg>
+          <span style="font-size:9px; font-weight:600; letter-spacing:0.08em; color:#8C8F96;">ATAQUE</span>
+          <svg width="11" height="11" viewBox="0 0 18 18"><polygon points="2,2 2,16 15,9" fill="{{ atkR }}"></polygon></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+      <div style="margin-right:auto; flex:none; font:700 clamp(36px, 3.4vw, 64px)/1 'Barlow Condensed'; font-variant-numeric:tabular-nums; letter-spacing:0.01em;">{{ awayScore }}</div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; min-width:0; flex:1 1 auto;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;">CB Gran Canaria</div>
+        <div style="display:grid; grid-template-columns:auto; justify-content:end; align-items:center; row-gap:1px; overflow:hidden; max-width:100%;">
+          
+          <div style="display:flex; gap:2px;">
+            <sc-for list="{{ awayFouls }}" as="f" hint-placeholder-count="5">
+              <span style="flex:none; display:block; width:9px; height:9px; border-radius:2px; background:{{ f.bg }}; border:1.5px solid {{ f.bd }};"></span>
+            </sc-for>
+          </div>
+          
+          <div style="display:flex; gap:2px;">
+            <sc-for list="{{ awayTO }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.onClick }}" title="Tiempo muerto" style="flex:none; width:9px; height:20px; padding:0; border:0; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                <span style="flex:none; display:block; width:9px; height:9px; border-radius:50%; background:{{ t.bg }}; border:1.5px solid {{ t.bd }};"></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="width:38px; height:38px; flex:none; background:#fff; border-radius:6px; padding:3px; display:flex; align-items:center; justify-content:center;"><sc-if value="{{ awayLogoOk }}" hint-placeholder-val="{{ true }}">
+          <img src="https://cbgrancanaria.net/wp-content/uploads/2015/01/logo-team.png" alt="CB Gran Canaria" onError="{{ awayLogoErr }}" style="width:100%; height:100%; object-fit:contain; display:block;">
+        </sc-if>
+        <sc-if value="{{ awayLogoBad }}" hint-placeholder-val="{{ false }}">
+          <span style="color:#111; font:700 14px 'Barlow Condensed';">CBGC</span>
+        </sc-if></div>
+    </div>
+
+    <div style="flex:none; display:flex; flex-direction:column; gap:3px; padding-left:8px; border-left:1px solid rgba(255,255,255,0.07);">
+        <button onClick="{{ opp1 }}" title="Rival anota 1" style="width:44px; height:26px; padding:0; border-radius:6px; border:1px solid rgba(255,107,107,0.4); background:rgba(255,107,107,0.1); cursor:pointer; font:700 15px/1 'Barlow Condensed'; color:#FF8A80;" style-active="background:rgba(255,107,107,0.3);">+1</button>
+        <button onClick="{{ opp2 }}" title="Rival anota 2" style="width:44px; height:26px; padding:0; border-radius:6px; border:1px solid rgba(255,107,107,0.4); background:rgba(255,107,107,0.1); cursor:pointer; font:700 15px/1 'Barlow Condensed'; color:#FF8A80;" style-active="background:rgba(255,107,107,0.3);">+2</button>
+        <button onClick="{{ opp3 }}" title="Rival anota 3" style="width:44px; height:26px; padding:0; border-radius:6px; border:1px solid rgba(255,107,107,0.4); background:rgba(255,107,107,0.1); cursor:pointer; font:700 15px/1 'Barlow Condensed'; color:#FF8A80;" style-active="background:rgba(255,107,107,0.3);">+3</button>
+      </div>
+  </header>
+
+    <main data-screen-label="Cancha" style="flex:1; display:flex; flex-direction:column; gap:14px; padding:16px 20px 18px; min-width:0; min-height:0;">
+      <div ref="{{ wrapRef }}" style="position:relative; flex:1; min-height:0; margin:-16px -20px -14px; overflow:hidden;">
+        <svg ref="{{ svgRef }}" onClick="{{ onCourt }}" viewBox="-2.4 -2.4 32.8 19.8" preserveAspectRatio="xMidYMid meet" style="position:absolute; inset:0; width:100%; height:100%; display:block; cursor:crosshair;">
+          <defs>
+            <filter id="lgStreak" x="-40" y="-40" width="108" height="95" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+              <feTurbulence type="fractalNoise" baseFrequency="0.05 2.4" numOctaves="3" seed="5"></feTurbulence>
+              <feColorMatrix result="c" type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.33  0 0 0 0 0.14  2.2 0 0 0 -0.95"></feColorMatrix>
+              <feComposite in="c" in2="SourceGraphic" operator="in"></feComposite>
+            </filter>
+            <filter id="lgStreakLight" x="-40" y="-40" width="108" height="95" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+              <feTurbulence type="fractalNoise" baseFrequency="0.07 3.1" numOctaves="3" seed="19"></feTurbulence>
+              <feColorMatrix result="c" type="matrix" values="0 0 0 0 1  0 0 0 0 0.97  0 0 0 0 0.9  2.2 0 0 0 -1.0"></feColorMatrix>
+              <feComposite in="c" in2="SourceGraphic" operator="in"></feComposite>
+            </filter>
+            <filter id="lgGrain" x="-40" y="-40" width="108" height="95" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+              <feTurbulence type="fractalNoise" baseFrequency="0.4 26" numOctaves="3" seed="7"></feTurbulence>
+              <feColorMatrix result="c" type="matrix" values="0 0 0 0 0.42  0 0 0 0 0.25  0 0 0 0 0.10  1.6 0 0 0 -0.62"></feColorMatrix>
+              <feComposite in="c" in2="SourceGraphic" operator="in"></feComposite>
+            </filter>
+            <radialGradient id="lgGloss" cx="50%" cy="50%" r="50%">
+              <stop offset="0" style="stop-color:#fff; stop-opacity:0.26;"></stop>
+              <stop offset="0.55" style="stop-color:#fff; stop-opacity:0.08;"></stop>
+              <stop offset="1" style="stop-color:#fff; stop-opacity:0;"></stop>
+            </radialGradient>
+            <linearGradient id="lgVarnish" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" style="stop-color:#fff; stop-opacity:0.10;"></stop>
+              <stop offset="0.5" style="stop-color:#fff; stop-opacity:0;"></stop>
+              <stop offset="1" style="stop-color:#5a3410; stop-opacity:0.06;"></stop>
+            </linearGradient>
+            <radialGradient id="lgSheen" cx="50%" cy="45%" r="65%">
+              <stop offset="0" style="stop-color:#fff; stop-opacity:0.10;"></stop>
+              <stop offset="1" style="stop-color:#3a2410; stop-opacity:0.16;"></stop>
+            </radialGradient>
+          </defs>
+          <g style="pointer-events:none;">
+            <rect x="-40" y="-40" width="108" height="95" style="fill:hsl(32 44% 78%);"></rect>
+            <rect x="-40" y="-40" width="108" height="95" filter="url(#lgStreak)" style="opacity:0.24;"></rect>
+            <rect x="-40" y="-40" width="108" height="95" filter="url(#lgStreakLight)" style="opacity:0.26;"></rect>
+            <rect x="-40" y="-40" width="108" height="95" filter="url(#lgGrain)" style="opacity:0.12;"></rect>
+            <rect x="-1.2" y="-1.2" width="30.4" height="17.4" style="fill:#0A2B85;"></rect>
+            <rect x="0" y="0" width="28" height="15" style="fill:hsl(32 44% 78%);"></rect>
+            <rect x="0" y="0" width="28" height="15" filter="url(#lgStreak)" style="opacity:0.24;"></rect>
+            <rect x="0" y="0" width="28" height="15" filter="url(#lgStreakLight)" style="opacity:0.26;"></rect>
+            <rect x="0" y="0" width="28" height="15" filter="url(#lgGrain)" style="opacity:0.12;"></rect>
+          </g>
+          <g style="fill:#0A2B85; opacity:0.9; pointer-events:none;">
+            <rect x="0" y="5.05" width="5.8" height="4.9"></rect>
+            <rect x="22.2" y="5.05" width="5.8" height="4.9"></rect>
+          </g>
+          <g style="pointer-events:none;">
+            <circle cx="14" cy="7.5" r="1.8" style="fill:#ffffff;"></circle>
+            <image href="assets/cbtelde.png" x="12.38" y="5.88" width="3.24" height="3.24" preserveAspectRatio="xMidYMid meet"></image>
+          </g>
+          <rect x="0" y="0" width="28" height="15" style="fill:url(#lgSheen); pointer-events:none;"></rect>
+          <g style="pointer-events:none; mix-blend-mode:screen;">
+            <rect x="0" y="0" width="28" height="15" style="fill:url(#lgVarnish);"></rect>
+            <ellipse cx="7" cy="3.6" rx="5.5" ry="2.2" style="fill:url(#lgGloss);"></ellipse>
+            <ellipse cx="21" cy="3.6" rx="5.5" ry="2.2" style="fill:url(#lgGloss);"></ellipse>
+            <ellipse cx="7" cy="11.4" rx="5.5" ry="2.2" style="fill:url(#lgGloss); opacity:0.6;"></ellipse>
+            <ellipse cx="21" cy="11.4" rx="5.5" ry="2.2" style="fill:url(#lgGloss); opacity:0.6;"></ellipse>
+            <ellipse cx="14" cy="7.5" rx="3.5" ry="1.6" style="fill:url(#lgGloss); opacity:0.7;"></ellipse>
+          </g>
+          <g style="fill:none; stroke:#F7F5EF; stroke-width:0.05; stroke-linecap:butt;">
+            <rect x="0" y="0" width="28" height="15"></rect>
+            <line x1="14" y1="0" x2="14" y2="15"></line>
+            <rect x="0" y="5.05" width="5.8" height="4.9"></rect>
+            <rect x="22.2" y="5.05" width="5.8" height="4.9"></rect>
+            <path d="M5.8 5.7 A1.8 1.8 0 0 1 5.8 9.3"></path>
+            <path d="M5.8 5.7 A1.8 1.8 0 0 0 5.8 9.3" style="stroke-dasharray:0.3 0.24;"></path>
+            <path d="M22.2 5.7 A1.8 1.8 0 0 0 22.2 9.3"></path>
+            <path d="M22.2 5.7 A1.8 1.8 0 0 1 22.2 9.3" style="stroke-dasharray:0.3 0.24;"></path>
+            <path d="M0 0.9 L2.99 0.9 A6.75 6.75 0 0 1 2.99 14.1 L0 14.1"></path>
+            <path d="M28 0.9 L25.01 0.9 A6.75 6.75 0 0 0 25.01 14.1 L28 14.1"></path>
+            <path d="M1.2 6.25 L1.575 6.25 A1.25 1.25 0 0 1 1.575 8.75 L1.2 8.75"></path>
+            <path d="M26.8 6.25 L26.425 6.25 A1.25 1.25 0 0 0 26.425 8.75 L26.8 8.75"></path>
+            <line x1="8.325" y1="-0.15" x2="8.325" y2="0"></line>
+            <line x1="19.675" y1="-0.15" x2="19.675" y2="0"></line>
+          </g>
+          <g style="stroke:#F7F5EF; stroke-width:0.07;">
+            <line x1="1.2" y1="6.6" x2="1.2" y2="8.4"></line>
+            <line x1="26.8" y1="6.6" x2="26.8" y2="8.4"></line>
+          </g>
+          <g style="fill:none; stroke:oklch(0.6 0.16 45); stroke-width:0.05;">
+            <line x1="1.2" y1="7.5" x2="1.35" y2="7.5"></line>
+            <circle cx="1.575" cy="7.5" r="0.225"></circle>
+            <line x1="26.8" y1="7.5" x2="26.65" y2="7.5"></line>
+            <circle cx="26.425" cy="7.5" r="0.225"></circle>
+          </g>
+          <g transform="scale(0.1)" style="pointer-events:none; font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:6.2px; letter-spacing:1.2px;">
+            <text x="{{ atkLabelX }}" y="-3.8" text-anchor="{{ atkAnchor }}" style="fill:#FFFFFF;">ATAQUE</text>
+            <sc-if value="{{ AR }}" hint-placeholder-val="{{ true }}"><text x="268" y="-3.6" text-anchor="start" style="fill:#FFFFFF; font-size:7.5px;">›</text></sc-if>
+            <sc-if value="{{ AL }}" hint-placeholder-val="{{ false }}"><text x="12" y="-3.6" text-anchor="end" style="fill:#FFFFFF; font-size:7.5px;">‹</text></sc-if>
+            <text x="{{ defLabelX }}" y="-3.8" text-anchor="{{ defAnchor }}" style="fill:rgba(255,255,255,0.6);">DEFENSA</text>
+          </g>
+          <rect x="{{ dimX }}" y="-40" width="54" height="95" style="fill:rgba(40,24,8,0.08); pointer-events:none;"></rect>
+          <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+            <circle cx="{{ pendCx }}" cy="{{ pendCy }}" r="0.5" style="fill:rgba(10,43,133,0.22); stroke:#0A2B85; stroke-width:0.08; pointer-events:none;"></circle>
+            <circle cx="{{ pendCx }}" cy="{{ pendCy }}" r="0.12" style="fill:#0A2B85; pointer-events:none;"></circle>
+          </sc-if>
+        </svg>
+
+      </div>
+
+      <section data-screen-label="Historial" aria-label="Últimas acciones" style="flex:none; margin:0 -20px -18px; height:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); background:#1d1f23; border-top:1px solid #0b0c0d;">
+        <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ false }}">
+          <div style="grid-column:1 / -1; min-width:0; display:flex; align-items:center; gap:14px; padding:0 14px; border-right:1px solid #0b0c0d;">
+            <span style="flex:none; font-size:10px; font-weight:600; letter-spacing:0.14em; line-height:1.3; color:#8C8F96;">QUINTETO<br>INICIAL</span>
+            <div style="flex:none; display:flex; gap:4px;">
+              <sc-for list="{{ starters }}" as="p" hint-placeholder-count="5">
+                <div style="width:66px; height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; background:#25272c;">
+                  <span style="font:700 17px/1 'Barlow Condensed'; color:#FFFFFF;">{{ p.num }}</span>
+                  <span style="max-width:62px; font-size:10px; font-weight:600; color:#A4A7AD; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.last }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <span style="min-width:0; margin-left:auto; font-size:12px; color:#6E7178; text-align:right; text-wrap:pretty;">Toca la cancha para registrar la primera acción</span>
+          </div>
+        </sc-if>
+        <sc-for list="{{ history }}" as="h" hint-placeholder-count="5">
+          <div style="min-width:0; display:grid; grid-template-columns:minmax(0,1fr) 34px; background:{{ h.bg }}; border-right:1px solid #0b0c0d;">
+            <div style="min-width:0; display:flex; flex-direction:column; justify-content:center; gap:3px; padding:0 4px 0 10px;">
+              <div style="display:flex; align-items:center; gap:6px; min-width:0;">
+                <span style="flex:none; min-width:28px; height:18px; padding:0 4px; border-radius:4px; display:flex; align-items:center; justify-content:center; font:700 12px/1 'Barlow Condensed'; letter-spacing:0.04em; background:{{ h.tagBg }}; color:{{ h.tagColor }}; border:1px solid {{ h.tagBd }};">{{ h.tag }}</span>
+                <span style="min-width:0; font:600 13px/1 'Barlow Condensed'; color:#8C8F96; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden;">{{ h.time }}</span>
+              </div>
+              <div style="display:flex; align-items:baseline; gap:5px; min-width:0; white-space:nowrap; overflow:hidden;">
+                <span style="flex:none; font:700 14px/1 'Barlow Condensed'; color:#FFFFFF;">{{ h.num }}</span>
+                <span style="min-width:0; font-size:12px; line-height:1.1; font-weight:600; color:#ECEBE8; overflow:hidden; text-overflow:ellipsis;">{{ h.last }}</span>
+              </div>
+              <span style="min-width:0; font-size:12px; line-height:1.1; color:#A4A7AD; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ h.text }}</span>
+            </div>
+            <button onClick="{{ h.onUndo }}" title="Deshacer esta acción" style="width:34px; height:100%; padding:0; border:0; border-left:1px solid rgba(255,255,255,0.05); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:rgba(255,255,255,0.06);" style-active="background:rgba(255,255,255,0.12);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C4C6CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>
+            </button>
+          </div>
+        </sc-for>
+        <sc-for list="{{ histBlanks }}" as="b" hint-placeholder-count="0">
+          <div style="border-right:1px solid #0b0c0d;"></div>
+        </sc-for>
+      </section>
+      </main>
+  </div>
+
+    <aside data-screen-label="Stats en pista" style="position:relative; background:#1d1f23; border-left:1px solid #0b0c0d; display:flex; flex-direction:column; gap:14px; padding:16px; min-height:0; overflow:auto;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <span style="font-size:10px; font-weight:600; letter-spacing:0.14em; color:#8C8F96;">CB TELDE · EN PISTA</span>
+        <button onClick="{{ openSubsBtn }}" style="height:36px; padding:0 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); cursor:pointer; display:flex; align-items:center; gap:7px; font-size:12px; font-weight:700; color:#ECEBE8;" style-active="background:rgba(255,255,255,0.14);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEBE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 3 8l4 4"></path><path d="M3 8h14"></path><path d="m17 20 4-4-4-4"></path><path d="M21 16H7"></path></svg>
+          <span>Cambios</span>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; font-variant-numeric:tabular-nums;">
+        <div style="display:grid; grid-template-columns:44px repeat(5, minmax(0,1fr)) 52px; gap:2px; margin-bottom:4px; flex:none;">
+          <span></span>
+          <sc-for list="{{ headCols }}" as="h" hint-placeholder-count="5">
+            <button onClick="{{ h.onClick }}" style="height:58px; border-radius:8px; border:0; background:{{ h.bg }}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:0 2px; min-width:0;">
+              <span style="font:700 23px/1 'Barlow Condensed'; color:{{ h.color }};">{{ h.num }}</span>
+              <span style="font-size:10.5px; font-weight:600; color:{{ h.color }}; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ h.last }}</span>
+            </button>
+          </sc-for>
+          <div style="height:58px; border-radius:8px; background:rgba(255,255,255,0.035); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; letter-spacing:0.12em; color:#8C8F96;">EQUIPO</div>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="16">
+          <div style="display:grid; grid-template-columns:44px repeat(5, minmax(0,1fr)) 52px; gap:2px; background:{{ r.rowBg }}; border-radius:5px; flex:1 1 0; min-height:24px; max-height:40px;">
+            <span style="display:flex; align-items:center; padding-left:8px; font-size:11px; font-weight:700; letter-spacing:0.06em; color:{{ r.lblColor }};">{{ r.label }}</span>
+            <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6">
+              <span style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1px 0; background:{{ c.bg }}; font-size:13.5px; font-weight:{{ c.fw }}; color:{{ c.color }};">
+                {{ c.v }}
+                <sc-if value="{{ c.hasSub }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:10px; font-weight:500; color:#8C8F96; line-height:1.1;">{{ c.sub }}</span>
+                </sc-if>
+              </span>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+        <div data-screen-label="Acción en pista" style="position:absolute; inset:0; z-index:5; background:#0b0c0d; display:flex; flex-direction:column; gap:1px;">
+          <div style="flex:none; height:64px; display:grid; grid-template-columns:minmax(0,1fr) 64px; gap:1px;">
+            <div style="min-width:0; display:flex; flex-direction:column; justify-content:center; gap:4px; padding:0 14px; background:#1d1f23;">
+              <div style="display:flex; align-items:baseline; gap:8px; min-width:0; white-space:nowrap; overflow:hidden;">
+                <span style="flex:none; font-size:10px; font-weight:600; letter-spacing:0.14em; color:#8C8F96;">{{ pEyebrow }}</span>
+                <span style="min-width:0; font-size:11px; color:#6E7178; overflow:hidden; text-overflow:ellipsis;">{{ pSub }}</span>
+              </div>
+              <span style="font:700 22px/1 'Barlow Condensed'; letter-spacing:0.02em; color:#FFFFFF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ pTitle }}</span>
+            </div>
+            <button onClick="{{ onCancel }}" title="Cerrar" style="border:0; border-radius:0; background:#1d1f23; cursor:pointer; font-size:17px; color:#C4C6CA;" style-hover="background:#25272c;" style-active="background:#2e3036;">✕</button>
+          </div>
+          <sc-if value="{{ pHasRows }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1; min-height:0; display:flex; flex-direction:column; gap:5px;">
+              <sc-for list="{{ pRows }}" as="r" hint-placeholder-count="5">
+                <div style="flex:1 1 0; min-height:0; max-height:{{ r.maxH }}; display:grid; grid-template-columns:58px minmax(0,1fr); gap:1px;">
+                  <div style="min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:0 3px; background:{{ r.stripe }};">
+                    <span style="font:700 30px/1 'Barlow Condensed'; color:#FFFFFF;">{{ r.num }}</span>
+                    <span style="max-width:100%; font-size:10px; font-weight:600; color:rgba(255,255,255,0.8); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.last }}</span>
+                  </div>
+                  <div style="min-width:0; display:grid; grid-template-columns:{{ r.cols }}; grid-auto-rows:minmax(44px,1fr); gap:1px;">
+                    <sc-for list="{{ r.btns }}" as="b" hint-placeholder-count="8">
+                      <button onClick="{{ b.onClick }}" style="min-width:0; border:0; border-radius:0; background:{{ b.bg }}; color:{{ b.fg }}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:0;" style-active="filter:brightness(1.3);">
+                        <span style="font:700 19px/1 'Barlow Condensed';">{{ b.label }}</span>
+                        <span style="font-size:9px; font-weight:600; opacity:0.75; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis;">{{ b.sub }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ pHasBig }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1; min-height:0; display:grid; grid-template-columns:{{ pBigCols }}; gap:1px;">
+              <sc-for list="{{ pBig }}" as="b" hint-placeholder-count="2">
+                <button onClick="{{ b.onClick }}" style="min-width:0; border:0; border-radius:0; background:{{ b.bg }}; color:{{ b.fg }}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;" style-active="filter:brightness(1.3);">
+                  <span style="font:700 52px/1 'Barlow Condensed';">{{ b.label }}</span>
+                  <span style="font-size:13px; font-weight:600; opacity:0.8;">{{ b.sub }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ pHasFoot }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:none; height:56px; display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:1px;">
+              <sc-for list="{{ pFoot }}" as="b" hint-placeholder-count="1">
+                <button onClick="{{ b.onClick }}" style="min-width:0; border:0; border-radius:0; background:{{ b.bg }}; color:{{ b.fg }}; cursor:pointer; font-size:14px; font-weight:700; white-space:nowrap;" style-active="filter:brightness(1.3);">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ subsOpen }}" hint-placeholder-val="{{ false }}">
+        <div data-screen-label="Cambios" style="position:absolute; inset:0; z-index:6; background:#1d1f23; display:flex; flex-direction:column; gap:12px; padding:14px 12px 12px;">
+          <div style="flex:none; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:0 4px;">
+            <div style="display:flex; flex-direction:column; gap:5px; min-width:0;">
+              <span style="font-size:10px; font-weight:600; letter-spacing:0.14em; color:#8C8F96;">CAMBIOS</span>
+              <span style="font:700 26px/1 'Barlow Condensed'; letter-spacing:0.02em; color:#FFFFFF;">Sustitución</span>
+              <span style="font-size:12px; color:#A4A7AD;">{{ subsTitle }}</span>
+            </div>
+            <button onClick="{{ closeSubs }}" title="Cerrar" style="flex:none; width:44px; height:44px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); cursor:pointer; font-size:16px; color:#C4C6CA;" style-active="background:rgba(255,255,255,0.14);">✕</button>
+          </div>
+          <div style="flex:none; display:flex; flex-direction:column; gap:6px;">
+            <span style="padding:0 4px; font-size:10px; font-weight:600; letter-spacing:0.14em; color:#8C8F96;">EN PISTA</span>
+            <div style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:6px;">
+              <sc-for list="{{ subsCourt }}" as="p" hint-placeholder-count="5">
+                <button onClick="{{ p.onClick }}" style="height:76px; min-width:0; border-radius:9px; border:1.5px solid {{ p.bd }}; background:{{ p.bg }}; opacity:{{ p.op }}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:0 3px;">
+                  <span style="font:700 24px/1 'Barlow Condensed'; color:#FFFFFF;">{{ p.num }}</span>
+                  <span style="font-size:11px; font-weight:600; color:#ECEBE8; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.last }}</span>
+                  <span style="font-size:10px; color:{{ p.lineColor }}; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ p.line }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:none; display:flex; flex-direction:column; gap:6px;">
+            <span style="padding:0 4px; font-size:10px; font-weight:600; letter-spacing:0.14em; color:#8C8F96;">BANQUILLO</span>
+            <div style="display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px;">
+              <sc-for list="{{ subsBench }}" as="p" hint-placeholder-count="7">
+                <button onClick="{{ p.onClick }}" style="height:76px; min-width:0; border-radius:9px; border:1.5px solid {{ p.bd }}; background:{{ p.bg }}; opacity:{{ p.op }}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:0 3px;">
+                  <span style="font:700 24px/1 'Barlow Condensed'; color:#FFFFFF;">{{ p.num }}</span>
+                  <span style="font-size:11px; font-weight:600; color:#ECEBE8; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.last }}</span>
+                  <span style="font-size:10px; color:{{ p.lineColor }}; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ p.line }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:1; min-height:0;"></div>
+          <button onClick="{{ closeSubs }}" style="flex:none; height:52px; border-radius:8px; border:0; background:#E9B949; cursor:pointer; font-size:14px; font-weight:700; color:#141414;" style-active="filter:brightness(1.1);">Hecho</button>
+        </div>
+      </sc-if>
+    </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showPct&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Tabla&quot;}}">
+const TEAM_C = 'oklch(0.74 0.13 295)', TEAM_TINT2 = 'oklch(0.74 0.13 295 / 0.11)';
+const GREEN = 'oklch(0.52 0.14 150)', RED = 'oklch(0.5 0.17 25)';
+const F = ['min','t2m','t2a','t3m','t3a','ftm','fta','ro','rd','as','br','bp','tap','fc','fr','pm'];
+const mk = (id, num, first, last, a) => { const p = { id, num, first, last }; F.forEach((k, i) => p[k] = a ? a[i] : 0); p.tap = 0; return p; };
+const pts = p => 2 * p.t2m + 3 * p.t3m + p.ftm;
+const val = p => pts(p) + p.ro + p.rd + p.as + p.br + p.tap + p.fr - ((p.t2a - p.t2m) + (p.t3a - p.t3m) + (p.fta - p.ftm) + p.bp + p.fc);
+const pct = (m, a) => a ? Math.round(m / a * 100) + '%' : '–';
+const sg = n => n > 0 ? '+' + n : String(n);
+const fmtMin = t => { const s = Math.floor(t / 10); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const fmtClock = c => c >= 600 ? Math.floor(c / 600) + ':' + String(Math.floor(c / 10) % 60).padStart(2, '0') : String(Math.floor(c / 10)).padStart(2, '0') + '.' + (c % 10);
+function applyDelta(list, pid, delta, n, sign, court) {
+  return list.map(p => {
+    if (p.id !== pid && !(n && court.includes(p.id))) return p;
+    const q = { ...p };
+    if (p.id === pid) for (const k in delta) q[k] = Math.max(0, q[k] + sign * delta[k]);
+    if (n && court.includes(p.id)) q.pm += sign * n;
+    return q;
+  });
+}
+function zoneAt(x, y, right) {
+  const bx = right ? 26.425 : 1.575, dist = Math.hypot(x - bx, y - 7.5);
+  const back = right ? x < 14 : x > 14;
+  const three = back || dist > 6.75 || y < 0.9 || y > 14.1;
+  const paint = (right ? x > 22.2 : x < 5.8) && y > 5.05 && y < 9.95;
+  const corner = !back && (y < 0.9 || y > 14.1) && (right ? x > 25.01 : x < 2.99);
+  return { dist, three, zone: back ? 'Campo propio' : paint ? 'Zona' : corner ? 'Triple esquina' : three ? 'Triple' : 'Media distancia' };
+}
+const zoneFor = (x, y, def, AR) => { const z = zoneAt(x, y, def ? !AR : AR); if (def && z.zone === 'Campo propio') z.zone = 'Campo contrario'; return { def, ...z }; };
+const shotEv = (three, made) => ({ delta: three ? { t3a: 1, t3m: made ? 1 : 0 } : { t2a: 1, t2m: made ? 1 : 0 }, pts: made ? (three ? 3 : 2) : 0,
+  kind: made ? 'made' : 'miss', tag: made ? (three ? '+3' : '+2') : (three ? 'T3' : 'T2'),
+  text: (three ? 'Triple' : 'Tiro de 2') + (made ? ' anotado' : ' fallado') });
+const EV = {
+  bp: { delta: { bp: 1 }, kind: 'stat', tag: 'BP', text: 'Pérdida' },
+  fr: { delta: { fr: 1 }, kind: 'stat', tag: 'FR', text: 'Falta recibida', oppFoul: true },
+  fa: { delta: { fc: 1, bp: 1 }, kind: 'stat', tag: 'FA', text: 'Falta en ataque', foul: true },
+  rd: { delta: { rd: 1 }, kind: 'stat', tag: 'RD', text: 'Rebote defensivo' },
+  br: { delta: { br: 1 }, kind: 'stat', tag: 'BR', text: 'Robo' },
+  fc: { delta: { fc: 1 }, kind: 'stat', tag: 'FC', text: 'Falta cometida', foul: true },
+  as: { delta: { as: 1 }, kind: 'stat', tag: 'AS', text: 'Asistencia' },
+  ro: { delta: { ro: 1 }, kind: 'stat', tag: 'RO', text: 'Rebote ofensivo' }
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const players = [
+      mk('h1', 3, 'Álvaro', 'Serrano'),
+      mk('h2', 7, 'Hugo', 'Llorente'),
+      mk('h3', 11, 'Marc', 'Ibáñez'),
+      mk('h4', 22, 'Diego', 'Castells'),
+      mk('h5', 41, 'Iván', 'Otero'),
+      mk('h6', 5, 'Pablo', 'Medina'),
+      mk('h7', 8, 'Rubén', 'Cabrera'),
+      mk('h8', 13, 'Adrián', 'Santana'),
+      mk('h9', 15, 'Jorge', 'Quintana'), mk('h10', 18, 'Samuel', 'Déniz'),
+      mk('h11', 24, 'Kevin', 'Suárez'), mk('h12', 30, 'Nauzet', 'Rodríguez')
+    ];
+    const court = ['h1', 'h2', 'h3', 'h4', 'h5'];
+    this.evSeq = 0;
+    const events = [];
+    this.state = {
+      running: false, clock: 6000, period: 1, poss: 'home',
+      players, court, oppScore: 0, attackRight: true, chain: null, subs: null, subLog: [],
+      fouls: { home: 0, away: 0 }, to: { home: 0, away: 0 }, pending: null, events, logoErr: {}
+    };
+    this.svgRef = React.createRef();
+    this.wrapRef = React.createRef();
+  }
+  componentDidMount() {
+    this.iv = setInterval(() => {
+      if (!this.state.running) return;
+      this.setState(s => {
+        if (!s.running) return null;
+        if (s.clock <= 1) return { clock: 0, running: false };
+        return { clock: s.clock - 1, players: s.players.map(p => s.court.includes(p.id) ? { ...p, min: p.min + 1 } : p) };
+      });
+    }, 100);
+    this.onKey = e => { if (e.code === 'Space' && e.target.tagName !== 'INPUT' && !this.state.editing) { e.preventDefault(); this.toggleClock(); } };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { clearInterval(this.iv); window.removeEventListener('keydown', this.onKey); }
+
+  toggleClock = () => this.setState(s => (s.editing ? null : { running: s.clock > 0 ? !s.running : false }));
+  editRef = React.createRef();
+  startEdit = () => {
+    const c = this.state.clock, sec = Math.floor(c / 10);
+    const v = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0') + (c % 10 ? ',' + (c % 10) : '');
+    this.setState({ running: false, editing: true, editVal: v, editErr: false }, () => { const el = this.editRef.current; if (el) { el.focus(); el.select(); } });
+  };
+  saveEdit = () => {
+    const v = (this.state.editVal || '').trim().replace(',', '.');
+    let m = v.match(/^(\d{1,2}):(\d{1,2})(?:\.(\d))?$/), t = null;
+    if (m && +m[2] < 60) t = (+m[1] * 60 + +m[2]) * 10 + (+(m[3] || 0));
+    else if ((m = v.match(/^(\d{1,3})(?:\.(\d))?$/))) t = +m[1] * 10 + (+(m[2] || 0));
+    if (t === null || t > this.maxClock(this.state.period)) { this.setState({ editErr: true }); return; }
+    this.setState({ clock: t, editing: false });
+  };
+  maxClock = p => (p <= 4 ? 6000 : 3000);
+  setPeriod = d => this.setState(s => {
+    const p = Math.max(1, Math.min(8, s.period + d));
+    if (p === s.period) return null;
+    const out = { period: p, clock: this.maxClock(p), running: false, pending: null, chain: null };
+    if ((s.period <= 2) !== (p <= 2)) out.attackRight = !s.attackRight;
+    if (d > 0) {
+      if (p <= 4) out.fouls = { home: 0, away: 0 };
+      if (p === 3 || p >= 5) out.to = { home: 0, away: 0 };
+    }
+    return out;
+  });
+
+  record(pid, ev, keep) {
+    const id = ++this.evSeq;
+    this.setState(s => {
+      const e = { id, pid, period: s.period, clock: s.clock, delta: {}, pts: 0, oppPts: 0, foul: false, oppFoul: false, loc: null, court: s.court, ...ev };
+      const out = { players: applyDelta(s.players, pid, e.delta, e.pts - e.oppPts, 1, e.court), events: [e, ...s.events].slice(0, 400) };
+      if (!keep) out.pending = null;
+      if (e.oppPts) out.oppScore = s.oppScore + e.oppPts;
+      if (e.foul || e.oppFoul) out.fouls = { home: s.fouls.home + (e.foul ? 1 : 0), away: s.fouls.away + (e.oppFoul ? 1 : 0) };
+      return out;
+    });
+    return id;
+  }
+  undoEvent = id => this.setState(s => {
+    const e = s.events.find(x => x.id === id); if (!e) return null;
+    const out = { players: applyDelta(s.players, e.pid, e.delta, e.pts - e.oppPts, -1, e.court), events: s.events.filter(x => x.id !== id), chain: s.chain && s.chain.srcId === id ? null : s.chain };
+    if (e.oppPts) out.oppScore = Math.max(0, s.oppScore - e.oppPts);
+    if (e.foul || e.oppFoul) out.fouls = { home: Math.max(0, s.fouls.home - (e.foul ? 1 : 0)), away: Math.max(0, s.fouls.away - (e.oppFoul ? 1 : 0)) };
+    return out;
+  });
+
+  onCourt = e => {
+    const svg = this.svgRef.current; if (!svg) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = pt.matrixTransform(svg.getScreenCTM().inverse());
+    if (m.x < 0 || m.x > 28 || m.y < 0 || m.y > 15) return;
+    const AR = this.state.attackRight, def = AR ? m.x < 14 : m.x > 14;
+    this.setState({ pending: { x: m.x, y: m.y, ...zoneFor(m.x, m.y, def, AR) }, chain: null, subs: null });
+  };
+  flipSide = () => this.setState(s => { const pd = s.pending; if (!pd) return null; return { pending: { ...pd, ...zoneFor(pd.x, pd.y, !pd.def, s.attackRight) } }; });
+  locOf = pd => ({ x: +pd.x.toFixed(2), y: +pd.y.toFixed(2), zone: pd.zone, three: pd.three, def: pd.def });
+  recordAt(pid, k) {
+    const pd = this.state.pending; if (!pd) return;
+    const loc = this.locOf(pd);
+    if (pd.def && (k === 'made' || k === 'miss')) k = k === 'made' ? 'farMade' : 'farMiss';
+    const far = k === 'farMade' || k === 'farMiss';
+    if (far) { loc.zone = 'Campo propio'; loc.three = true; loc.def = false; }
+    const shot = k === 'made' || k === 'miss' || far, made = k === 'made' || k === 'farMade', three = far || pd.three;
+    const id = this.record(pid, { ...(shot ? shotEv(three, made) : EV[k]), loc });
+    if (shot && made) this.setState({ chain: { type: 'ast', pid, loc, three, srcId: id } });
+    else if (shot) this.setState({ chain: { type: 'reb', pid, loc, three, fromShot: true, srcId: id } });
+    else if (k === 'fr') this.setState({ chain: { type: 'ftAsk', pid, loc, srcId: id } });
+  }
+  oppScore = n => this.record(null, { oppPts: n, kind: 'opp', tag: '+' + n, text: n === 1 ? 'Rival · tiro libre' : 'Rival anota' }, true);
+  oppScoreAt = () => {
+    const pd = this.state.pending; if (!pd) return;
+    const n = pd.three ? 3 : 2;
+    this.record(null, { oppPts: n, kind: 'opp', tag: '+' + n, text: 'Rival anota', loc: this.locOf(pd) });
+  };
+  chainOppFt = n => {
+    if (n) this.record(null, { oppPts: n, kind: 'opp', tag: '+' + n, text: 'Rival · tiros libres' });
+    this.setState({ chain: null });
+  };
+  chainAssist = aPid => {
+    const ch = this.state.chain; if (!ch) return;
+    if (aPid) this.record(aPid, { ...EV.as, loc: ch.loc });
+    this.setState({ chain: null });
+  };
+  chainReb = rPid => {
+    const ch = this.state.chain; if (!ch) return;
+    if (rPid) this.record(rPid, { ...EV.ro, loc: ch.fromShot ? ch.loc : null });
+    this.setState({ chain: null });
+  };
+  chainFtCount = n => this.setState(st => ({ chain: { ...st.chain, type: 'ft', n, i: 0, res: [] } }));
+  chainFt = made => {
+    const ch = this.state.chain; if (!ch) return;
+    this.record(ch.pid, made ? { delta: { ftm: 1, fta: 1 }, pts: 1, kind: 'made', tag: '+1', text: 'Tiro libre anotado' } : { delta: { fta: 1 }, kind: 'miss', tag: 'TL', text: 'Tiro libre fallado' });
+    const i = ch.i + 1;
+    if (i < ch.n) this.setState({ chain: { ...ch, i, res: [...ch.res, made] } });
+    else if (!made) this.setState({ chain: { type: 'reb', pid: ch.pid, fromShot: false, loc: ch.loc, srcId: ch.srcId } });
+    else this.setState({ chain: null });
+  };
+
+  openSubs = out => this.setState({ subs: { out: out || null, inn: null }, pending: null, chain: null });
+  pickSub = id => this.setState(s => {
+    if (!s.subs) return null;
+    let { out, inn } = s.subs;
+    if (s.court.includes(id)) out = out === id ? null : id;
+    else { const p = s.players.find(x => x.id === id); if (!p || p.fc >= 5) return null; inn = inn === id ? null : id; }
+    if (out && inn) return { court: s.court.map(c => c === out ? inn : c), subs: { out: null, inn: null }, subLog: [...s.subLog, { period: s.period, clock: s.clock, out, inn }] };
+    return { subs: { out, inn } };
+  });
+
+  renderVals() {
+    const s = this.state, P = this.props;
+    const showPct = P.showPct ?? false;
+    const homeScore = s.players.reduce((a, p) => a + pts(p), 0), awayScore = s.oppScore;
+    const toMax = s.period <= 2 ? 2 : s.period <= 4 ? 3 : 1;
+    const foulSq = t => Array.from({ length: 5 }, (_, i) => { const on = i < s.fouls[t], col = s.fouls[t] >= 5 ? '#FF6B6B' : '#ECEBE8'; return { bg: on ? col : 'transparent', bd: on ? col : 'rgba(255,255,255,0.32)' }; });
+    const toPips = t => { const rem = Math.max(0, toMax - s.to[t]); return Array.from({ length: toMax }, (_, i) => ({
+      bg: i < rem ? '#E9B949' : 'transparent', bd: i < rem ? '#E9B949' : 'rgba(255,255,255,0.32)',
+      onClick: () => this.setState(st => ({ to: { ...st.to, [t]: i < rem ? Math.min(toMax, st.to[t] + 1) : Math.max(0, st.to[t] - 1) } }))
+    })); };
+    const c = s.clock;
+    const byId = id => s.players.find(p => p.id === id) || {};
+    const list = s.court.map(byId);
+    const tot = {}; F.forEach(k => tot[k] = s.players.reduce((a, p) => a + p[k], 0));
+    const sh = (m, a) => ({ v: m + '/' + a, sub: pct(m, a) });
+    const g = k => [p => ({ v: p[k] }), () => ({ v: tot[k] })];
+    const defs = [
+      ['MIN', p => ({ v: fmtMin(p.min) }), () => ({ v: '' })],
+      ['PTS', p => ({ v: pts(p), b: 1 }), () => ({ v: homeScore, b: 1 })],
+      ['T2', p => sh(p.t2m, p.t2a), () => sh(tot.t2m, tot.t2a)],
+      ['T3', p => sh(p.t3m, p.t3a), () => sh(tot.t3m, tot.t3a)],
+      ['TL', p => sh(p.ftm, p.fta), () => sh(tot.ftm, tot.fta)],
+      ['RO', ...g('ro')], ['RD', ...g('rd')],
+      ['RT', p => ({ v: p.ro + p.rd }), () => ({ v: tot.ro + tot.rd })],
+      ['AS', ...g('as')], ['BR', ...g('br')], ['BP', ...g('bp')],
+      ['FC', p => ({ v: p.fc, warn: p.fc >= 5 ? '#FF6B6B' : p.fc === 4 ? '#E9B949' : null }), () => ({ v: tot.fc })],
+      ['+/-', p => ({ v: sg(p.pm) }), () => ({ v: sg(homeScore - awayScore) })],
+      ['VAL', p => ({ v: val(p), b: 1 }), () => ({ v: val(tot), b: 1 })]
+    ];
+    const cell = (o, team) => ({
+      v: String(o.v), sub: o.sub || '', hasSub: showPct && !!o.sub,
+      bg: team ? 'rgba(255,255,255,0.035)' : 'transparent',
+      color: o.warn || (o.b ? '#FFFFFF' : '#D5D6D9'), fw: o.b ? 700 : 500
+    });
+    const rows = defs.map(([label, f, ft], i) => ({
+      label, rowBg: i % 2 ? 'rgba(255,255,255,0.022)' : 'transparent',
+      lblColor: label === 'PTS' || label === 'VAL' ? TEAM_C : '#8C8F96',
+      cells: [...list.map(p => cell(f(p), false)), cell(ft(), true)]
+    }));
+    const headCols = list.map(p => ({ num: p.num, last: p.last, bg: 'transparent', color: p.fc >= 5 ? '#FF6B6B' : '#C4C6CA', onClick: () => this.openSubs(p.id) }));
+
+    const TAGS = { made: [GREEN, '#FFFFFF', GREEN], miss: ['transparent', '#FF8A80', 'rgba(255,107,107,0.55)'], stat: ['rgba(255,255,255,0.06)', '#C4C6CA', 'rgba(255,255,255,0.1)'], opp: ['rgba(255,107,107,0.12)', '#FF8A80', 'rgba(255,107,107,0.35)'] };
+    const history = s.events.slice(0, 5).map((e, idx) => { const p = e.pid ? byId(e.pid) : null, tg = TAGS[e.kind] || TAGS.stat; return {
+      time: (e.period <= 4 ? e.period + 'º' : 'PR' + (e.period - 4)) + ' · ' + fmtClock(e.clock),
+      tag: e.tag, tagBg: tg[0], tagColor: tg[1], tagBd: tg[2], num: p ? '#' + p.num : 'RIV', last: p ? p.last : 'Gran Canaria', text: e.text,
+      bg: idx === 0 ? '#25272c' : 'transparent', onUndo: () => this.undoEvent(e.id) }; });
+
+    const pd = s.pending, AR = s.attackRight, ch = s.chain, mark = pd || (ch && ch.loc) || null;
+    const NEU = { bg: '#25272c', bd: 'transparent', fg: '#ECEBE8' };
+    const GR = { bg: GREEN, bd: GREEN, fg: '#FFFFFF' }, RD = { bg: RED, bd: RED, fg: '#FFFFFF' };
+    const OPP = { bg: 'rgba(255,107,107,0.12)', bd: 'rgba(255,107,107,0.45)', fg: '#FF8A80' };
+    const pName = id => { const p = byId(id); return '#' + p.num + ' ' + p.last; };
+    const row = (p, btns) => ({ num: p.num, last: p.last, name: p.first + ' ' + p.last, line: pts(p) + ' PTS · ' + (p.ro + p.rd) + ' REB · ' + p.fc + ' FC', cols: 'repeat(' + Math.min(4, btns.length) + ', minmax(0,1fr))', maxH: btns.length > 4 ? '160px' : '96px', btns });
+    const dm = pd ? pd.dist.toFixed(1).replace('.', ',') + ' m del aro' : '';
+    const pn = { eyebrow: '', title: '', sub: '', rows: [], big: [], bigCols: '1fr', foot: [] };
+    if (ch && ch.type === 'ast') {
+      Object.assign(pn, { eyebrow: 'CANASTA · ' + pName(ch.pid), title: '¿Asistencia?', sub: (ch.three ? '+3' : '+2') + ' · ' + ch.loc.zone });
+      pn.rows = list.filter(p => p.id !== ch.pid).map(p => row(p, [{ label: 'AS', sub: 'Asistencia', ...NEU, onClick: () => this.chainAssist(p.id) }]));
+      pn.foot = [{ label: 'Sin asistencia', ...NEU, onClick: () => this.chainAssist(null) }];
+    } else if (ch && ch.type === 'reb') {
+      Object.assign(pn, { eyebrow: (ch.fromShot ? 'TIRO FALLADO · ' : 'TL FALLADO · ') + pName(ch.pid), title: '¿Rebote ofensivo?', sub: ch.fromShot ? (ch.three ? 'T3' : 'T2') + ' · ' + ch.loc.zone : 'Último tiro libre' });
+      pn.rows = list.map(p => row(p, [{ label: 'RO', sub: 'Rebote ofensivo', ...NEU, onClick: () => this.chainReb(p.id) }]));
+      pn.foot = [{ label: 'Rebote rival', ...NEU, onClick: () => this.chainReb(null) }];
+    } else if (ch && ch.type === 'ftAsk') {
+      Object.assign(pn, { eyebrow: 'FALTA RECIBIDA · ' + pName(ch.pid), title: '¿Tiros libres?', sub: 'Cuántos lanza', bigCols: 'repeat(3, minmax(0,1fr))' });
+      pn.big = [1, 2, 3].map(n => ({ label: String(n), sub: n === 1 ? 'tiro' : 'tiros', ...NEU, onClick: () => this.chainFtCount(n) }));
+      pn.foot = [{ label: 'Sin tiros libres', ...NEU, onClick: () => this.setState({ chain: null }) }];
+    } else if (ch && ch.type === 'ft') {
+      Object.assign(pn, { eyebrow: 'TIROS LIBRES · ' + pName(ch.pid), title: 'Tiro libre ' + (ch.i + 1) + ' de ' + ch.n, sub: ch.res.length ? 'Anteriores: ' + ch.res.map(r => r ? 'anotado' : 'fallado').join(', ') : 'Primer lanzamiento', bigCols: 'repeat(2, minmax(0,1fr))' });
+      pn.big = [{ label: '+1', sub: 'Anotado', ...GR, onClick: () => this.chainFt(true) }, { label: '✕', sub: 'Fallado', ...RD, onClick: () => this.chainFt(false) }];
+    } else if (pd) {
+      const t3 = pd.def || pd.three;
+      Object.assign(pn, { eyebrow: pd.def ? 'DEFENSA' : 'ATAQUE', title: pd.zone, sub: pd.def ? dm.replace('del aro', 'de su aro') : 'Tiro de ' + (t3 ? '3' : '2') + ' · ' + dm });
+      pn.rows = list.map(p => row(p, [
+        { label: t3 ? '+3' : '+2', sub: 'Anota', ...GR, k: 'made' },
+        { label: t3 ? 'T3' : 'T2', sub: 'Falla', ...RD, k: 'miss' },
+        { label: 'RO', sub: 'Reb. of.', ...NEU, k: 'ro' },
+        { label: 'RD', sub: 'Reb. def.', ...NEU, k: 'rd' },
+        { label: 'BP', sub: 'Pérdida', ...NEU, k: 'bp' },
+        { label: 'BR', sub: 'Robo', ...NEU, k: 'br' },
+        { label: 'FR', sub: 'Falta rec.', ...NEU, k: 'fr' },
+        { label: 'FC', sub: 'Falta', ...NEU, k: 'fc' }
+      ].map(b => ({ ...b, onClick: () => this.recordAt(p.id, b.k) }))));
+    }
+
+    const STRIPES = ['#2a2d34', '#1d1f23'], NEU_ALT = '#2e3139';
+    pn.rows = pn.rows.map((r, i) => ({ ...r, stripe: STRIPES[i % 2],
+      btns: r.btns.map(b => ({ ...b, bg: i % 2 === 0 && b.bg === NEU.bg ? NEU_ALT : b.bg })) }));
+    const sb = s.subs;
+    const subCard = (p, onC) => {
+      const on = !!sb && (sb.out === p.id || sb.inn === p.id), out5 = p.fc >= 5;
+      return { num: p.num, last: p.last, line: out5 ? 'ELIMINADO' : p.fc + ' FC · ' + fmtMin(p.min),
+        bg: on ? (onC ? 'rgba(255,107,107,0.16)' : 'oklch(0.52 0.14 150 / 0.22)') : '#25272c',
+        bd: on ? (onC ? '#FF6B6B' : GREEN) : 'transparent', lineColor: out5 ? '#FF6B6B' : '#8C8F96',
+        op: !onC && out5 ? 0.45 : 1, onClick: () => this.pickSub(p.id) };
+    };
+
+    return {
+      homeScore, awayScore,
+      homeFouls: foulSq('home'), awayFouls: foulSq('away'), homeTO: toPips('home'), awayTO: toPips('away'),
+      homeLogoOk: !s.logoErr.home, homeLogoBad: !!s.logoErr.home, awayLogoOk: !s.logoErr.away, awayLogoBad: !!s.logoErr.away,
+      homeLogoErr: () => this.setState(st => ({ logoErr: { ...st.logoErr, home: true } })),
+      awayLogoErr: () => this.setState(st => ({ logoErr: { ...st.logoErr, away: true } })),
+      periodLabel: s.period <= 4 ? 'CUARTO' : 'PRÓRROGA', periodVal: s.period <= 4 ? s.period + 'º' : 'PR' + (s.period - 4),
+      prevPeriod: () => this.setPeriod(-1), nextPeriod: () => this.setPeriod(1),
+      clockStr: fmtClock(c), clockColor: c < 600 ? '#FF6B6B' : '#E9B949',
+      editing: s.editing, notEditing: !s.editing, editVal: s.editVal, editRef: this.editRef,
+      editBorder: s.editErr ? '#FF6B6B' : '#E9B949',
+      startEdit: this.startEdit, cancelEdit: () => this.setState({ editing: false }), saveEdit: this.saveEdit,
+      onEditChange: e => this.setState({ editVal: e.target.value, editErr: false }),
+      onEditKey: e => { if (e.key === 'Enter') this.saveEdit(); if (e.key === 'Escape') this.setState({ editing: false }); },
+      toggleClock: this.toggleClock, running: s.running, paused: !s.running, playBg: s.running ? 'rgba(255,255,255,0.1)' : '#E9B949',
+      togglePoss: () => this.setState(st => ({ poss: st.poss === 'home' ? 'away' : 'home' })),
+      possL: s.poss === 'home' ? '#E9B949' : 'rgba(255,255,255,0.16)', possR: s.poss === 'away' ? '#E9B949' : 'rgba(255,255,255,0.16)',
+      svgRef: this.svgRef, wrapRef: this.wrapRef, onCourt: this.onCourt,
+      dimX: AR ? -40 : 14,
+      atkLabelX: AR ? 266 : 14, defLabelX: AR ? 4 : 276, atkAnchor: AR ? 'end' : 'start', defAnchor: AR ? 'start' : 'end', AR, AL: !AR,
+      toggleAttack: () => this.setState(st => { const ar = !st.attackRight, p = st.pending; return { attackRight: ar, pending: p ? { ...p, ...zoneFor(p.x, p.y, ar ? p.x < 14 : p.x > 14, ar) } : null }; }),
+      atkL: AR ? 'rgba(255,255,255,0.16)' : '#FFFFFF', atkR: AR ? '#FFFFFF' : 'rgba(255,255,255,0.16)',
+      hasPending: !!mark, pendCx: mark ? mark.x : 0, pendCy: mark ? mark.y : 0,
+      panelOpen: !!pd || !!ch, pEyebrow: pn.eyebrow, pTitle: pn.title, pSub: pn.sub,
+      pRows: pn.rows, pHasRows: pn.rows.length > 0, pBig: pn.big, pHasBig: pn.big.length > 0, pBigCols: pn.bigCols,
+      pFoot: pn.foot, pHasFoot: pn.foot.length > 0,
+      onCancel: () => this.setState({ pending: null, chain: null }),
+      opp1: () => this.oppScore(1), opp2: () => this.oppScore(2), opp3: () => this.oppScore(3),
+      subsOpen: !!sb, openSubsBtn: () => this.openSubs(null), closeSubs: () => this.setState({ subs: null }),
+      subsTitle: !sb ? '' : sb.out ? 'Sale ' + pName(sb.out) + ' · elige quién entra' : sb.inn ? 'Entra ' + pName(sb.inn) + ' · elige quién sale' : 'Elige quién sale y quién entra',
+      subsCourt: list.map(p => subCard(p, true)), subsBench: s.players.filter(p => !s.court.includes(p.id)).map(p => subCard(p, false)),
+      history, noHistory: !history.length, starters: list.map(p => ({ num: p.num, last: p.last })),
+      histBlanks: history.length ? Array.from({ length: Math.max(0, 5 - history.length) }, (_, k) => ({ k })) : [],
+      headCols, rows
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+.install-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
+}
+
+.install-btn {
+  height: 40px;
+  padding: 0 14px 0 12px;
+  border: 0;
+  border-radius: 8px 0 0 8px;
+  background: #e9b949;
+  color: #141414;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.install-btn:active {
+  filter: brightness(1.08);
+}
+
+.install-x {
+  width: 36px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 0 8px 8px 0;
+  background: #d4a63d;
+  color: #141414;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.install-x:active {
+  filter: brightness(1.08);
+}
+
+.install-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.install-pos {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.install-dialog {
+  width: min(420px, 100%);
+  background: #1d1f23;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.install-dialog-title {
+  margin: 0;
+  font: 700 22px/1.1 var(--font-num);
+  color: #fff;
+}
+
+.install-dialog-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #c4c6ca;
+}
+
+.install-dialog-body strong {
+  color: #ecebe8;
+  font-weight: 700;
+}
+
+.install-dialog-ok {
+  align-self: flex-end;
+  height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #e9b949;
+  color: #141414;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
