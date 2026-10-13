@@ -19,6 +19,10 @@ npm run dev
 
 Abre en Chrome a **1180×820** (modo dispositivo / tableta apaisada).
 
+## GitHub Pages
+
+Tras cada push a `main` se publica en [https://borjahen.github.io/statstld/](https://borjahen.github.io/statstld/).
+
 ## Qué hay ahora
 
 - Marcador, crono, cuartos, posesión y lado de ataque

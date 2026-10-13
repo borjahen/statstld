@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { asset } from '../asset'
 import type { GameApi } from '../game/useGame'
 
 export function Court({ game }: { game: GameApi }) {
@@ -76,7 +77,7 @@ export function Court({ game }: { game: GameApi }) {
         <g style={{ pointerEvents: 'none' }}>
           <circle cx="14" cy="7.5" r="1.8" fill="#ffffff" />
           <image
-            href="/cbtelde.png"
+            href={asset('cbtelde.png')}
             x="12.38"
             y="5.88"
             width="3.24"

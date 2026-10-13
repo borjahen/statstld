@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: process.env.GITHUB_PAGES === '1' ? '/statstld/' : '/',
   plugins: [
     react(),
     VitePWA({
@@ -16,7 +17,8 @@ export default defineConfig({
         background_color: '#161719',
         display: 'standalone',
         orientation: 'landscape',
-        start_url: '/',
+        start_url: './',
+        scope: './',
         lang: 'es',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },

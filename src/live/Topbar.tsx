@@ -1,6 +1,7 @@
 import { Field } from '@ark-ui/react/field'
 import { Toggle } from '@ark-ui/react/toggle'
 import { useEffect, useRef } from 'react'
+import { asset } from '../asset'
 import type { GameApi } from '../game/useGame'
 
 export function Topbar({ game }: { game: GameApi }) {
@@ -21,7 +22,7 @@ export function Topbar({ game }: { game: GameApi }) {
           {state.logoErr.home ? (
             <span className="crest-fallback">CBT</span>
           ) : (
-            <img src="/cbtelde.png" alt="CB Telde" onError={() => game.logoErr('home')} />
+            <img src={asset('cbtelde.png')} alt="CB Telde" onError={() => game.logoErr('home')} />
           )}
         </div>
         <div className="team-info">
