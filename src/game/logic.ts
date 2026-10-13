@@ -32,18 +32,13 @@ export function mkPlayer(id: string, num: number, first: string, last: string): 
 
 export function initialState(): GameState {
   const players = [
-    mkPlayer('h1', 3, 'Álvaro', 'Serrano'),
-    mkPlayer('h2', 7, 'Hugo', 'Llorente'),
-    mkPlayer('h3', 11, 'Marc', 'Ibáñez'),
-    mkPlayer('h4', 22, 'Diego', 'Castells'),
-    mkPlayer('h5', 41, 'Iván', 'Otero'),
-    mkPlayer('h6', 5, 'Pablo', 'Medina'),
-    mkPlayer('h7', 8, 'Rubén', 'Cabrera'),
-    mkPlayer('h8', 13, 'Adrián', 'Santana'),
-    mkPlayer('h9', 15, 'Jorge', 'Quintana'),
-    mkPlayer('h10', 18, 'Samuel', 'Déniz'),
-    mkPlayer('h11', 24, 'Kevin', 'Suárez'),
-    mkPlayer('h12', 30, 'Nauzet', 'Rodríguez'),
+    mkPlayer('h1', 3, '', 'Aitaimi'),
+    mkPlayer('h2', 7, '', 'Boja'),
+    mkPlayer('h3', 11, '', 'Juanlu'),
+    mkPlayer('h4', 22, '', 'Agronomo'),
+    mkPlayer('h5', 41, '', 'Gloria'),
+    mkPlayer('h6', 5, '', 'Tino'),
+    mkPlayer('h7', 8, '', 'Mawé'),
   ]
   return {
     running: false,
