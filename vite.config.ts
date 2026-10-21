@@ -1,9 +1,20 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
+
+const commit = (() => {
+  try {
+    return execSync('git rev-parse --short HEAD').toString().trim()
+  } catch {
+    return 'dev'
+  }
+})()
+const built = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', timeZone: 'Atlantic/Canary' })
 
 export default defineConfig({
   base: '/',
+  define: { __APP_VERSION__: JSON.stringify(`${commit} · ${built}`) },
   plugins: [
     react(),
     VitePWA({

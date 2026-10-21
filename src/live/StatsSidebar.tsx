@@ -11,7 +11,10 @@ function SidebarView({ game }: { game: GameApi }) {
   return (
     <aside className="sidebar">
       <div className="side-head">
-        <span className="side-title">CB TELDE · EN PISTA</span>
+        <div className="side-id">
+          <span className="side-title">CB TELDE · EN PISTA</span>
+          <span className="app-ver">{__APP_VERSION__}</span>
+        </div>
         {fs.canFullscreen ? (
           <button
             className="cambios fs-btn"
