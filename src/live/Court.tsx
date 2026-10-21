@@ -2,21 +2,26 @@ import { memo, useRef } from 'react'
 import { asset } from '../asset'
 import type { GameApi } from '../game/useGame'
 
+const VB = { x: -2.4, y: -2.4, w: 32.8, h: 19.8 }
+
 function CourtView({ game }: { game: GameApi }) {
   const svgRef = useRef<SVGSVGElement>(null)
   const { vm, courtTap } = game
   const mark = vm.mark
 
+  // Se convierte el toque a mano: getScreenCTM ignora las transformaciones CSS en algunos
+  // navegadores móviles y el punto caía desplazado.
   const onClick = (e: React.MouseEvent<SVGSVGElement>) => {
     const svg = svgRef.current
     if (!svg) return
-    const pt = svg.createSVGPoint()
-    pt.x = e.clientX
-    pt.y = e.clientY
-    const ctm = svg.getScreenCTM()
-    if (!ctm) return
-    const m = pt.matrixTransform(ctm.inverse())
-    courtTap(m.x, m.y)
+    const box = svg.getBoundingClientRect()
+    const cw = svg.clientWidth
+    const ch = svg.clientHeight
+    if (!box.width || !box.height || !cw || !ch) return
+    const lx = ((e.clientX - box.left) / box.width) * cw
+    const ly = ((e.clientY - box.top) / box.height) * ch
+    const scale = Math.min(cw / VB.w, ch / VB.h)
+    courtTap((lx - (cw - VB.w * scale) / 2) / scale + VB.x, (ly - (ch - VB.h * scale) / 2) / scale + VB.y)
   }
 
   return (
@@ -24,7 +29,7 @@ function CourtView({ game }: { game: GameApi }) {
       <svg
         ref={svgRef}
         className="court"
-        viewBox="-2.4 -2.4 32.8 19.8"
+        viewBox={`${VB.x} ${VB.y} ${VB.w} ${VB.h}`}
         preserveAspectRatio="xMidYMid meet"
         onClick={onClick}
       >
