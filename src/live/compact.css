@@ -28,11 +28,6 @@
     grid-row: 2;
   }
 
-  /* La pista está limitada por el alto, no por el ancho: se ensancha un poco para aprovechar el sitio libre. */
-  .court {
-    transform: scaleX(1.14);
-  }
-
   .history {
     grid-column: 1;
     grid-row: 3;
