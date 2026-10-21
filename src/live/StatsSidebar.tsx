@@ -1,14 +1,32 @@
 import { Presence } from '@ark-ui/react/presence'
 import type { GameApi } from '../game/useGame'
+import { useFullscreen } from '../pwa/fullscreen'
 
 export function StatsSidebar({ game }: { game: GameApi }) {
   const { vm } = game
   const pn = vm.panel
+  const fs = useFullscreen()
 
   return (
     <aside className="sidebar">
       <div className="side-head">
         <span className="side-title">CB TELDE · EN PISTA</span>
+        {fs.canFullscreen ? (
+          <button
+            className="cambios fs-btn"
+            title={fs.active ? 'Salir de pantalla completa' : 'Pantalla completa'}
+            aria-label={fs.active ? 'Salir de pantalla completa' : 'Pantalla completa'}
+            onClick={fs.toggle}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEBE8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {fs.active ? (
+                <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
+              ) : (
+                <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+              )}
+            </svg>
+          </button>
+        ) : null}
         <button className="cambios" onClick={() => game.openSubs(null)}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECEBE8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M7 4 3 8l4 4" />

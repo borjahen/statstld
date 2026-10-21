@@ -1,0 +1,443 @@
+/* Móvil en horizontal: mismas funciones que la tablet en una pantalla de ~400px de alto. */
+@media (max-height: 560px) {
+  .shell {
+    min-width: 0;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) clamp(300px, 42vw, 380px);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* La barra superior ocupa todo el ancho; pista e historial quedan a la izquierda. */
+  .left {
+    display: contents;
+  }
+
+  .topbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    height: 54px;
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .court-wrap {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .history {
+    grid-column: 1;
+    grid-row: 3;
+    height: 46px;
+  }
+
+  .sidebar {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .crest {
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+  }
+
+  .team {
+    gap: 6px;
+  }
+
+  .team-name {
+    font-size: 11px;
+  }
+
+  .foul-pip,
+  .to-pip {
+    width: 7px;
+    height: 7px;
+  }
+
+  .to-btn {
+    width: 11px;
+    height: 16px;
+  }
+
+  .score {
+    font-size: clamp(26px, 5vw, 34px);
+  }
+
+  .clock-block {
+    height: 46px;
+    gap: 4px;
+    padding: 0 6px;
+    border-radius: 10px;
+  }
+
+  .clock-col {
+    gap: 1px;
+  }
+
+  .clock-col.time {
+    min-width: 70px;
+  }
+
+  .eyebrow {
+    font-size: 7px;
+  }
+
+  .step {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .period-val {
+    min-width: 20px;
+    font-size: 17px;
+  }
+
+  .vdiv {
+    margin: 8px 1px;
+  }
+
+  .clock-num {
+    font-size: 26px;
+  }
+
+  .edit-clock {
+    height: 16px;
+    padding: 0 6px;
+    font-size: 9px;
+  }
+
+  .clock-input {
+    width: 76px;
+    height: 26px;
+    font-size: 22px;
+  }
+
+  .edit-cancel,
+  .edit-ok {
+    height: 16px;
+    font-size: 9px;
+  }
+
+  .play {
+    width: 38px;
+    height: 38px;
+  }
+
+  .toggles {
+    gap: 2px;
+  }
+
+  .toggle,
+  .toggle[data-scope='toggle'][data-part='root'] {
+    width: 74px;
+    height: 21px;
+    gap: 4px;
+  }
+
+  .toggle-label {
+    font-size: 8px;
+  }
+
+  /* +1 +2 +3 del rival en fila: 3 botones apilados no caben en 54px. */
+  .opp-col {
+    flex-direction: row;
+    gap: 3px;
+    padding-left: 6px;
+  }
+
+  .opp-btn {
+    width: 34px;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  .hist-empty {
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .hist-empty-label {
+    font-size: 8px;
+  }
+
+  .starters {
+    gap: 3px;
+  }
+
+  .starter {
+    width: 50px;
+    height: 36px;
+    gap: 1px;
+  }
+
+  .starter-num {
+    font-size: 15px;
+  }
+
+  .starter-last {
+    max-width: 46px;
+    font-size: 9px;
+  }
+
+  .hint {
+    font-size: 10px;
+  }
+
+  .hist-cell {
+    grid-template-columns: minmax(0, 1fr) 26px;
+  }
+
+  .hist-body {
+    gap: 1px;
+    padding: 0 2px 0 6px;
+  }
+
+  .hist-l1 {
+    gap: 4px;
+  }
+
+  .tag {
+    min-width: 22px;
+    height: 14px;
+    font-size: 10px;
+  }
+
+  .hist-time {
+    font-size: 10px;
+  }
+
+  .hist-num {
+    font-size: 12px;
+  }
+
+  .hist-last {
+    font-size: 10px;
+  }
+
+  .hist-text {
+    font-size: 9px;
+  }
+
+  .undo {
+    width: 26px;
+  }
+
+  .side-head {
+    gap: 6px;
+  }
+
+  .side-title {
+    font-size: 9px;
+  }
+
+  .cambios {
+    height: 30px;
+    padding: 0 9px;
+    font-size: 11px;
+  }
+
+  .t-row {
+    grid-template-columns: 30px repeat(5, minmax(0, 1fr)) 38px;
+  }
+
+  .t-head {
+    margin-bottom: 2px;
+  }
+
+  .player-head {
+    height: 40px;
+    gap: 1px;
+  }
+
+  .player-num {
+    font-size: 17px;
+  }
+
+  .player-last {
+    font-size: 8.5px;
+  }
+
+  .equipo {
+    height: 40px;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+  }
+
+  .stat-row {
+    min-height: 0;
+    max-height: 32px;
+  }
+
+  .stat-label {
+    padding-left: 4px;
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  .stat-cell {
+    font-size: 11.5px;
+  }
+
+  .panel-head {
+    height: 44px;
+    grid-template-columns: minmax(0, 1fr) 48px;
+  }
+
+  .panel-copy {
+    padding: 0 10px;
+    gap: 2px;
+  }
+
+  .panel-eye {
+    font-size: 8px;
+  }
+
+  .panel-sub {
+    font-size: 10px;
+  }
+
+  .panel-title {
+    font-size: 17px;
+  }
+
+  .p-rows {
+    gap: 3px;
+  }
+
+  .p-row {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .p-num {
+    font-size: 22px;
+  }
+
+  .p-last {
+    font-size: 8.5px;
+  }
+
+  .p-grid {
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .p-btn-l {
+    font-size: 15px;
+  }
+
+  .p-btn-s {
+    font-size: 8px;
+  }
+
+  .p-big-l {
+    font-size: 34px;
+  }
+
+  .p-big-s {
+    font-size: 11px;
+  }
+
+  .p-foot {
+    height: 42px;
+  }
+
+  .p-foot-btn {
+    font-size: 12px;
+  }
+
+  .subs-inner {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .subs-title {
+    font-size: 20px;
+  }
+
+  .subs-sub {
+    font-size: 10px;
+  }
+
+  .subs-x {
+    width: 36px;
+    height: 36px;
+  }
+
+  .subs-sec {
+    gap: 3px;
+  }
+
+  .subs-court,
+  .subs-bench {
+    gap: 4px;
+  }
+
+  .sub-card {
+    height: 52px;
+    gap: 1px;
+  }
+
+  .sub-num {
+    font-size: 18px;
+  }
+
+  .sub-last {
+    font-size: 9px;
+  }
+
+  .sub-line {
+    font-size: 8px;
+  }
+
+  .hecho {
+    height: 40px;
+  }
+
+  /* Solo icono y en la esquina inferior de la pista: ni tapa la tabla ni el historial. */
+  .install-fab.install-fab {
+    right: calc(clamp(300px, 42vw, 380px) + 8px + env(safe-area-inset-right));
+    bottom: 54px;
+  }
+
+  .install-fab .install-btn,
+  .install-fab .install-x {
+    height: 30px;
+  }
+
+  .install-fab .install-btn {
+    padding: 0 9px;
+    font-size: 0;
+    gap: 0;
+  }
+}
+
+/* Móviles más estrechos (~650-740px). */
+@media (max-height: 560px) and (max-width: 760px) {
+  .hint {
+    display: none;
+  }
+
+  .team-name {
+    font-size: 9.5px;
+    letter-spacing: 0.02em;
+  }
+
+  .score {
+    font-size: 24px;
+  }
+
+  .topbar {
+    padding: 0 4px;
+    gap: 4px;
+  }
+
+  .opp-btn {
+    width: 30px;
+  }
+}

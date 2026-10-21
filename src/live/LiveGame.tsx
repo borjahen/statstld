@@ -4,6 +4,7 @@ import { HistoryBar } from './HistoryBar'
 import { StatsSidebar } from './StatsSidebar'
 import { Topbar } from './Topbar'
 import './live.css'
+import './compact.css'
 
 export function LiveGame() {
   const game = useGame()

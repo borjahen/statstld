@@ -994,3 +994,10 @@
 .hecho:active {
   filter: brightness(1.1);
 }
+
+.fs-btn {
+  margin-left: auto;
+  padding: 0;
+  width: 36px;
+  justify-content: center;
+}
