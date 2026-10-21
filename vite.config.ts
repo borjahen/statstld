@@ -10,11 +10,10 @@ const commit = (() => {
     return 'dev'
   }
 })()
-const built = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', timeZone: 'Atlantic/Canary' })
 
 export default defineConfig({
   base: '/',
-  define: { __APP_VERSION__: JSON.stringify(`${commit} · ${built}`) },
+  define: { __APP_VERSION__: JSON.stringify(commit) },
   plugins: [
     react(),
     VitePWA({
