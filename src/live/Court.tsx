@@ -1,8 +1,8 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 import { asset } from '../asset'
 import type { GameApi } from '../game/useGame'
 
-export function Court({ game }: { game: GameApi }) {
+function CourtView({ game }: { game: GameApi }) {
   const svgRef = useRef<SVGSVGElement>(null)
   const { vm, courtTap } = game
   const mark = vm.mark
@@ -28,72 +28,16 @@ export function Court({ game }: { game: GameApi }) {
         preserveAspectRatio="xMidYMid meet"
         onClick={onClick}
       >
-        <defs>
-          <filter id="lgStreak" x="-40" y="-40" width="108" height="95" filterUnits="userSpaceOnUse">
-            <feTurbulence type="fractalNoise" baseFrequency="0.05 2.4" numOctaves="3" seed="5" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.33  0 0 0 0 0.14  2.2 0 0 0 -0.95" />
-            <feComposite in2="SourceGraphic" operator="in" />
-          </filter>
-          <filter id="lgStreakLight" x="-40" y="-40" width="108" height="95" filterUnits="userSpaceOnUse">
-            <feTurbulence type="fractalNoise" baseFrequency="0.07 3.1" numOctaves="3" seed="19" />
-            <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 0.97  0 0 0 0 0.9  2.2 0 0 0 -1.0" />
-            <feComposite in2="SourceGraphic" operator="in" />
-          </filter>
-          <filter id="lgGrain" x="-40" y="-40" width="108" height="95" filterUnits="userSpaceOnUse">
-            <feTurbulence type="fractalNoise" baseFrequency="0.4 26" numOctaves="3" seed="7" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0.42  0 0 0 0 0.25  0 0 0 0 0.10  1.6 0 0 0 -0.62" />
-            <feComposite in2="SourceGraphic" operator="in" />
-          </filter>
-          <radialGradient id="lgGloss" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stopColor="#fff" stopOpacity="0.26" />
-            <stop offset="0.55" stopColor="#fff" stopOpacity="0.08" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="lgVarnish" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" stopOpacity="0.10" />
-            <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
-            <stop offset="1" stopColor="#5a3410" stopOpacity="0.06" />
-          </linearGradient>
-          <radialGradient id="lgSheen" cx="50%" cy="45%" r="65%">
-            <stop offset="0" stopColor="#fff" stopOpacity="0.10" />
-            <stop offset="1" stopColor="#3a2410" stopOpacity="0.16" />
-          </radialGradient>
-        </defs>
-        <g style={{ pointerEvents: 'none' }}>
-          <rect x="-40" y="-40" width="108" height="95" fill="hsl(32 44% 78%)" />
-          <rect x="-40" y="-40" width="108" height="95" filter="url(#lgStreak)" opacity="0.24" />
-          <rect x="-40" y="-40" width="108" height="95" filter="url(#lgStreakLight)" opacity="0.26" />
-          <rect x="-40" y="-40" width="108" height="95" filter="url(#lgGrain)" opacity="0.12" />
-          <rect x="-1.2" y="-1.2" width="30.4" height="17.4" fill="#0A2B85" />
-          <rect x="0" y="0" width="28" height="15" fill="hsl(32 44% 78%)" />
-          <rect x="0" y="0" width="28" height="15" filter="url(#lgStreak)" opacity="0.24" />
-          <rect x="0" y="0" width="28" height="15" filter="url(#lgStreakLight)" opacity="0.26" />
-          <rect x="0" y="0" width="28" height="15" filter="url(#lgGrain)" opacity="0.12" />
-        </g>
-        <g fill="#0A2B85" opacity="0.9" style={{ pointerEvents: 'none' }}>
-          <rect x="0" y="5.05" width="5.8" height="4.9" />
-          <rect x="22.2" y="5.05" width="5.8" height="4.9" />
-        </g>
-        <g style={{ pointerEvents: 'none' }}>
-          <circle cx="14" cy="7.5" r="1.8" fill="#ffffff" />
-          <image
-            href={asset('cbtelde.png')}
-            x="12.38"
-            y="5.88"
-            width="3.24"
-            height="3.24"
-            preserveAspectRatio="xMidYMid meet"
-          />
-        </g>
-        <rect x="0" y="0" width="28" height="15" fill="url(#lgSheen)" style={{ pointerEvents: 'none' }} />
-        <g style={{ pointerEvents: 'none', mixBlendMode: 'screen' }}>
-          <rect x="0" y="0" width="28" height="15" fill="url(#lgVarnish)" />
-          <ellipse cx="7" cy="3.6" rx="5.5" ry="2.2" fill="url(#lgGloss)" />
-          <ellipse cx="21" cy="3.6" rx="5.5" ry="2.2" fill="url(#lgGloss)" />
-          <ellipse cx="7" cy="11.4" rx="5.5" ry="2.2" fill="url(#lgGloss)" opacity="0.6" />
-          <ellipse cx="21" cy="11.4" rx="5.5" ry="2.2" fill="url(#lgGloss)" opacity="0.6" />
-          <ellipse cx="14" cy="7.5" rx="3.5" ry="1.6" fill="url(#lgGloss)" opacity="0.7" />
-        </g>
+        {/* Suelo, pintura, logo y brillos ya "horneados": los filtros feTurbulence eran muy lentos en móvil. */}
+        <image
+          href={asset('court-floor.webp')}
+          x="-12"
+          y="-8"
+          width="52"
+          height="31"
+          preserveAspectRatio="none"
+          style={{ pointerEvents: 'none' }}
+        />
         <g fill="none" stroke="#F7F5EF" strokeWidth="0.05" strokeLinecap="butt">
           <rect x="0" y="0" width="28" height="15" />
           <line x1="14" y1="0" x2="14" y2="15" />
@@ -162,3 +106,13 @@ export function Court({ game }: { game: GameApi }) {
     </div>
   )
 }
+
+/** La pista solo cambia con la marca del tiro y el sentido de ataque, no con el crono. */
+export const Court = memo(
+  CourtView,
+  (a, b) =>
+    a.game.vm.AR === b.game.vm.AR &&
+    a.game.vm.mark?.x === b.game.vm.mark?.x &&
+    a.game.vm.mark?.y === b.game.vm.mark?.y &&
+    a.game.courtTap === b.game.courtTap,
+)

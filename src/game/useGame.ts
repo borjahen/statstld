@@ -525,28 +525,33 @@ export function useGame() {
     }
   }, [state, byId])
 
-  return {
-    state,
-    vm,
-    toggleClock: () => dispatch({ type: 'TOGGLE_CLOCK' }),
-    startEdit: () => dispatch({ type: 'START_EDIT' }),
-    cancelEdit: () => dispatch({ type: 'CANCEL_EDIT' }),
-    setEdit: (value: string) => dispatch({ type: 'SET_EDIT', value }),
-    saveEdit: () => dispatch({ type: 'SAVE_EDIT' }),
-    setPeriod: (d: number) => dispatch({ type: 'SET_PERIOD', d }),
-    togglePoss: () => dispatch({ type: 'TOGGLE_POSS' }),
-    toggleAttack: () => dispatch({ type: 'TOGGLE_ATTACK' }),
-    toggleTO: (side: TeamSide, i: number, rem: number, toMax: number) =>
-      dispatch({ type: 'TOGGLE_TO', side, i, rem, toMax }),
-    courtTap: (x: number, y: number) => dispatch({ type: 'COURT_TAP', x, y }),
-    cancelPanel: () => dispatch({ type: 'CANCEL_PANEL' }),
-    opp: (n: number) => dispatch({ type: 'OPP', n, id: nextId(), keep: true }),
-    undo: (id: number) => dispatch({ type: 'UNDO', id }),
-    openSubs: (out: string | null) => dispatch({ type: 'OPEN_SUBS', out }),
-    closeSubs: () => dispatch({ type: 'CLOSE_SUBS' }),
-    pickSub: (id: string) => dispatch({ type: 'PICK_SUB', id }),
-    logoErr: (side: TeamSide) => dispatch({ type: 'LOGO_ERR', side }),
-  }
+  // Las acciones no dependen del estado: así su identidad no cambia en cada tick
+  // y los componentes memoizados no se vuelven a pintar 10 veces por segundo.
+  const actions = useMemo(
+    () => ({
+      toggleClock: () => dispatch({ type: 'TOGGLE_CLOCK' }),
+      startEdit: () => dispatch({ type: 'START_EDIT' }),
+      cancelEdit: () => dispatch({ type: 'CANCEL_EDIT' }),
+      setEdit: (value: string) => dispatch({ type: 'SET_EDIT', value }),
+      saveEdit: () => dispatch({ type: 'SAVE_EDIT' }),
+      setPeriod: (d: number) => dispatch({ type: 'SET_PERIOD', d }),
+      togglePoss: () => dispatch({ type: 'TOGGLE_POSS' }),
+      toggleAttack: () => dispatch({ type: 'TOGGLE_ATTACK' }),
+      toggleTO: (side: TeamSide, i: number, rem: number, toMax: number) =>
+        dispatch({ type: 'TOGGLE_TO', side, i, rem, toMax }),
+      courtTap: (x: number, y: number) => dispatch({ type: 'COURT_TAP', x, y }),
+      cancelPanel: () => dispatch({ type: 'CANCEL_PANEL' }),
+      opp: (n: number) => dispatch({ type: 'OPP', n, id: nextId(), keep: true }),
+      undo: (id: number) => dispatch({ type: 'UNDO', id }),
+      openSubs: (out: string | null) => dispatch({ type: 'OPEN_SUBS', out }),
+      closeSubs: () => dispatch({ type: 'CLOSE_SUBS' }),
+      pickSub: (id: string) => dispatch({ type: 'PICK_SUB', id }),
+      logoErr: (side: TeamSide) => dispatch({ type: 'LOGO_ERR', side }),
+    }),
+    [],
+  )
+
+  return { state, vm, ...actions }
 }
 
 export type GameApi = ReturnType<typeof useGame>

@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import { Presence } from '@ark-ui/react/presence'
 import type { GameApi } from '../game/useGame'
 import { useFullscreen } from '../pwa/fullscreen'
 
-export function StatsSidebar({ game }: { game: GameApi }) {
+function SidebarView({ game }: { game: GameApi }) {
   const { vm } = game
   const pn = vm.panel
   const fs = useFullscreen()
@@ -182,3 +183,12 @@ export function StatsSidebar({ game }: { game: GameApi }) {
     </aside>
   )
 }
+
+const tableKey = ({ game: { vm } }: { game: GameApi }) => JSON.stringify([vm.headCols, vm.rows])
+
+/** Con un panel abierto se repinta siempre (sus botones llevan funciones); si no, solo cuando cambia la tabla. */
+export const StatsSidebar = memo(SidebarView, (a, b) => {
+  const open = (g: GameApi) => g.vm.panelOpen || g.vm.subsOpen
+  if (open(a.game) || open(b.game)) return false
+  return tableKey(a) === tableKey(b)
+})

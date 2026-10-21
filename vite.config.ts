@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['telde.svg', 'favicon.svg', 'cbtelde.png', 'apple-touch-icon.png'],
+      includeAssets: ['telde.svg', 'favicon.svg', 'cbtelde.png', 'apple-touch-icon.png', 'court-floor.webp'],
       manifest: {
         name: 'CB Telde · Stats',
         short_name: 'Telde Stats',
@@ -28,7 +28,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,webp,ico,woff2}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

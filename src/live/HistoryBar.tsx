@@ -1,6 +1,7 @@
+import { memo } from 'react'
 import type { GameApi } from '../game/useGame'
 
-export function HistoryBar({ game }: { game: GameApi }) {
+function HistoryView({ game }: { game: GameApi }) {
   const { vm } = game
   if (!vm.history.length) {
     return (
@@ -56,3 +57,10 @@ export function HistoryBar({ game }: { game: GameApi }) {
     </section>
   )
 }
+
+const historyKey = ({ game: { vm } }: { game: GameApi }) => JSON.stringify([vm.history, vm.starters, vm.histBlanks])
+
+export const HistoryBar = memo(
+  HistoryView,
+  (a, b) => a.game.undo === b.game.undo && historyKey(a) === historyKey(b),
+)
