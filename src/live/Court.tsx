@@ -45,7 +45,9 @@ function CourtView({ game }: { game: GameApi }) {
         />
         <g fill="none" stroke="#F7F5EF" strokeWidth="0.05" strokeLinecap="butt">
           <rect x="0" y="0" width="28" height="15" />
-          <line x1="14" y1="0" x2="14" y2="15" />
+          {/* Línea de medio campo cortada alrededor del escudo para que se vea entero. */}
+          <line x1="14" y1="0" x2="14" y2="5.55" />
+          <line x1="14" y1="9.45" x2="14" y2="15" />
           <rect x="0" y="5.05" width="5.8" height="4.9" />
           <rect x="22.2" y="5.05" width="5.8" height="4.9" />
           <path d="M5.8 5.7 A1.8 1.8 0 0 1 5.8 9.3" />
