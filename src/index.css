@@ -52,7 +52,7 @@ button:focus-visible {
 html,
 body {
   overscroll-behavior: none;
-  touch-action: manipulation;
+  touch-action: pan-x pan-y;
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;

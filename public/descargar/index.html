@@ -99,7 +99,7 @@
         </svg>
         Descargar para Android
       </a>
-      <span class="meta">Archivo APK · 7 MB · <a href="https://github.com/borjahen/statstld/releases">todas las versiones</a></span>
+      <span class="meta" id="ver">Archivo APK · <a href="https://github.com/borjahen/statstld/releases">todas las versiones</a></span>
       <ol>
         <li>Pulsa <strong>Descargar</strong> y abre el archivo cuando termine.</li>
         <li>Si Android avisa, permite <strong>instalar apps desconocidas</strong> para el navegador que uses.</li>
@@ -107,5 +107,19 @@
       </ol>
       <p class="meta">¿iPhone o iPad? Abre <a href="../">stats.cbtelde.com</a> en Safari y usa «Añadir a pantalla de inicio».</p>
     </main>
+    <script>
+      // Muestra la última versión publicada, para compararla con la que enseña la app en la barra lateral.
+      fetch('https://api.github.com/repos/borjahen/statstld/releases/latest')
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((rel) => {
+          const apk = rel.assets.find((a) => a.name.endsWith('.apk'))
+          const mb = apk ? ' · ' + (apk.size / 1048576).toFixed(1).replace('.', ',') + ' MB' : ''
+          const day = new Date(rel.published_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
+          document.getElementById('ver').innerHTML =
+            'Última versión: <strong>' + rel.tag_name + '</strong> · ' + day + mb +
+            ' · <a href="https://github.com/borjahen/statstld/releases">todas las versiones</a>'
+        })
+        .catch(() => {})
+    </script>
   </body>
 </html>

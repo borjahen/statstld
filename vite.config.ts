@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { execSync } from 'node:child_process'
+import pkg from './package.json'
 
 const commit = (() => {
   try {
@@ -13,7 +14,7 @@ const commit = (() => {
 
 export default defineConfig({
   base: '/',
-  define: { __APP_VERSION__: JSON.stringify(commit) },
+  define: { __APP_VERSION__: JSON.stringify(`v${pkg.version.replace(/\.0$/, '')} · ${commit}`) },
   plugins: [
     react(),
     VitePWA({
