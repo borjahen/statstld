@@ -91,7 +91,7 @@
         <h1>Telde Stats</h1>
         <p>App para Android: pantalla completa, siempre en horizontal y funciona sin conexión.</p>
       </div>
-      <a class="btn" href="https://github.com/borjahen/statstld/releases/latest/download/telde-stats.apk" download>
+      <a class="btn" id="dl" href="https://github.com/borjahen/statstld/releases/latest">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 3v12" />
           <path d="m7 11 5 5 5-5" />
@@ -113,6 +113,8 @@
         .then((r) => (r.ok ? r.json() : Promise.reject()))
         .then((rel) => {
           const apk = rel.assets.find((a) => a.name.endsWith('.apk'))
+          // El nombre del archivo lleva la versión, así que el enlace sale del propio release.
+          if (apk) document.getElementById('dl').href = apk.browser_download_url
           const mb = apk ? ' · ' + (apk.size / 1048576).toFixed(1).replace('.', ',') + ' MB' : ''
           const day = new Date(rel.published_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
           document.getElementById('ver').innerHTML =
