@@ -181,6 +181,19 @@ export function parseClock(raw: string, period: number): number | null {
   return t
 }
 
+/**
+ * Entrada del crono con teclado numérico (sin dos puntos): los dígitos entran por la derecha,
+ * como en una calculadora. 1 → 0:01, 530 → 5:30, 1000 → 10:00. Con coma o punto se deja tal cual
+ * (5,3 = 5 segundos y 3 décimas).
+ */
+export function formatClockInput(raw: string) {
+  if (/[.,]/.test(raw)) return raw.replace(/[^\d.,]/g, '').replace(/^0+(?=\d)/, '')
+  const digits = raw.replace(/\D/g, '').replace(/^0+(?=\d)/, '').slice(-4)
+  if (!digits) return ''
+  const padded = digits.padStart(3, '0')
+  return `${padded.slice(0, -2)}:${padded.slice(-2)}`
+}
+
 export function clockEditValue(c: number) {
   const sec = Math.floor(c / 10)
   return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}${c % 10 ? `,${c % 10}` : ''}`

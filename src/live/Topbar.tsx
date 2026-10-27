@@ -2,6 +2,7 @@ import { Field } from '@ark-ui/react/field'
 import { Toggle } from '@ark-ui/react/toggle'
 import { useEffect, useRef } from 'react'
 import { asset } from '../asset'
+import { formatClockInput } from '../game/logic'
 import type { GameApi } from '../game/useGame'
 
 export function Topbar({ game }: { game: GameApi }) {
@@ -75,7 +76,7 @@ export function Topbar({ game }: { game: GameApi }) {
                   inputMode="decimal"
                   placeholder="m:ss"
                   style={{ borderColor: state.editErr ? '#FF6B6B' : '#E9B949' }}
-                  onChange={(e) => game.setEdit(e.target.value)}
+                  onChange={(e) => game.setEdit(formatClockInput(e.target.value))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') game.saveEdit()
                     if (e.key === 'Escape') game.cancelEdit()
