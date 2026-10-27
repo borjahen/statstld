@@ -1,9 +1,11 @@
+import { Capacitor } from '@capacitor/core'
 import { useCallback, useEffect, useState } from 'react'
 
 type FsDoc = Document & { webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => Promise<void> }
 type FsEl = HTMLElement & { webkitRequestFullscreen?: () => Promise<void> }
 
 const supported = () => {
+  if (Capacitor.isNativePlatform()) return false
   const el = document.documentElement as FsEl
   return typeof el.requestFullscreen === 'function' || typeof el.webkitRequestFullscreen === 'function'
 }
